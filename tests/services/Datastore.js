@@ -1,16 +1,7 @@
 
-/*
-Datastore.js
 
-this file will have interaction with our test's database  (CREATE - CREATE ID - UPDATE - DELETE-DOCUMENT - DELETE-COLLECTION - LIST)
-CLASS Datastore details:
-CREATE : setDocument() => set document to collection + default ID
-CREATE ID : setDocumentWithID() => set document to collection + manual ID
-UPDATE : updateDocument () => update document data in special collection
-DELETE-DOCUMENT : deleteCollection () => delete special document with ID
-DELETE-COLLECTION : deleteCollection () => delete special collection and depend on [deleteQueryBatch()]
-LIST : listDocumemt() => will Return list of documents
- */
+// Datastore.js
+// this file will have interaction with our test's database  (CREATE - CREATE ID - UPDATE - DELETE-DOCUMENT - DELETE-COLLECTION - LIST)
 
 import Config from '../Config'
 import Firestore from '@google-cloud/firestore'
@@ -38,7 +29,7 @@ class Datastore {
     this.identifier = identifier
     this.batchSize = 10
   }
-
+// setDocument() => set document to collection + default ID
   async setDocument () {
     try {
       const document = firestore.collection(this.collection).doc()
@@ -48,6 +39,7 @@ class Datastore {
       console.log('error', e)
     }
   }
+  // setDocumentWithID() => set document to collection + manual ID
   async setDocumentWithID () {
     try {
       const document = firestore.collection(this.collection).doc(this.identifier)
@@ -58,7 +50,7 @@ class Datastore {
     }
   }
 
-  // Update an existing document.
+// updateDocument () => update document data in special collection
   async updateDocument () {
     try {
       const document = firestore.collection(this.collection).doc('')
@@ -70,7 +62,8 @@ class Datastore {
     }
   }
 
-  // Delete the document.
+
+  //deleteCollection () => delete special document with ID
   async deleteDocument (ID) {
     try {
       const document = firestore.collection(this.collection).doc(ID)
@@ -93,14 +86,13 @@ class Datastore {
       return this.deleteQueryBatch(collection, batchSize)
     }
   }
-  // Delete collection.
+  //  deleteCollection () => delete special collection and depend on [deleteQueryBatch()]
   deleteCollection () {
     let collectionRef = firestore.collection(this.collection)
     var collection = collectionRef.limit(this.batchSize)
     return this.deleteQueryBatch(collection, this.batchSize)
   }
-
-  // reference list of documents
+// listDocumemt() => will Return list of document
   async listDocumemt () {
     try {
       const document = firestore.collection().doc()

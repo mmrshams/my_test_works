@@ -2,6 +2,10 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
+
+//testing base on  end-point cluster  =>   /v1/staffs/login  
+//testing all state of resposibility that can happens 
+
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import staff from '../../services/Staff'
@@ -10,9 +14,9 @@ var assert = chai.assert
 chai.use(chaiHttp)
 const server = Config.config.server.host + ':' + Config.config.server.port
 describe('Staff Entity', () => {
-  /*
-  * Test the /POST Login route
-  */
+  
+ // Test the /POST Login route
+  
   describe('/POST  Login', () => {
     beforeEach(function () {
       return [staff.createStaff(), staff.createStaffEmail()]

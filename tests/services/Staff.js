@@ -1,13 +1,7 @@
-/*
-Staff.js
 
-this file have some function to instial data for our test that need  references
+//Staff.js
 
- createStaff () => create new staff base on staff object
- deleteStaff (ID) => delete speical staff with ID
- cleanStaff () => delete staffs colleciton that we had some documnets on it
-
- */
+//this file have some function to instial data for our test that need  references
 
 import Datastore from './Datastore'
 let staffCollection = 'dev_staffs'
@@ -41,22 +35,22 @@ let emailStaff = {
     }
 }
 const ClassStaff = new Datastore.Datastore(staffCollection, staff, staff.id)
-
+ // createStaff () => create new staff base on staff object
 function createStaff () {
   return ClassStaff.setDocumentWithID()
 }
-
+//  deleteStaff (ID) => delete speical staff with ID
 function deleteStaff (ID) {
   return ClassStaff.deleteDocument(ID)
 }
-
+//  cleanStaff () => delete staffs colleciton that we had some documnets on it
 function cleanStaff () {
   return ClassStaff.deleteCollection()
 }
 
 // create class instance for email-staff collection
 const ClassEmailStaffS = new Datastore.Datastore(emialStaffCollection, emailStaff, staff.email)
-
+// these guys are look like above and just another instance of datastore class
 function createStaffEmail () {
   return ClassEmailStaffS.setDocumentWithID()
 }
@@ -66,6 +60,5 @@ function deleteStaffEmail (ID) {
 function cleanStaffEmail () {
   return ClassStaff.deleteCollection()
 }
-// deleteStaff('173670d5-3a3c-4bed-b672-aca4db81c937')
-// deleteStaffEmail('main_test@gmail.com')
+
 module.exports = { createStaff, deleteStaff, cleanStaff, createStaffEmail, deleteStaffEmail, cleanStaffEmail }

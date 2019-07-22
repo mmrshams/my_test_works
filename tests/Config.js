@@ -1,10 +1,14 @@
 
 // test configuration and setup environment variables
+//dotenv read environment variables for using in local machin -dev time
+//we never use this in pordunction and must bechange
 require('dotenv').config({ path: './config.test' })
 const config = {}
+// environment variables
 const {
   NODE_ENV, STAFFS_SERVER_PORT, FIRESTORE_PROJECT_ID, FIRESTORE_KEY_FILE_NAME, HOST_SERVER, PROPERTY_STAFFS_API_KEY
 } = process.env
+//setting default values for  environment variables
 config.environment = NODE_ENV || 'test'
 config.envShortName = 'test'
 config.apiKey = PROPERTY_STAFFS_API_KEY || 'b30002fe-e1a8-4dfd-b9df-c1cce6d957ce'

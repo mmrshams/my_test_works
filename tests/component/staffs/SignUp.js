@@ -2,6 +2,9 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
+
+//testing base on  end-point cluster  =>   /v1/staffs  
+//testing all state of resposibility that can happens
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Service from '../Services.js'
@@ -10,9 +13,9 @@ var assert = chai.assert
 chai.use(chaiHttp)
 
 describe('Staff Entity', () => {
-  /*
-  * Test the /POST SignUp route
-  */
+  
+  // Test the /POST SignUp route
+  
   describe('/POST  SignUp', () => {
     afterEach(function () {
       return Service.listDocumemt()
