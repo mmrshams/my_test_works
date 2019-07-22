@@ -1,0 +1,29 @@
+{
+  "name": "my_test_works",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+
+    "doc-generate": "gitbook-comment generate -p ./",
+    "doc-clean-up": "gitbook-comment clean-up -p ./",
+    "doc-publish": "gitbook-comment publish -p ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmrshams/my_test_works.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmrshams/my_test_works/issues"
+  },
+  "homepage": "https://github.com/mmrshams/my_test_works#readme",
+  "dependencies": {
+    "gitbook-comment": "^1.0.6"
+  }
+}
