@@ -21,7 +21,7 @@ describe('Staff Entity', () => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
-        email: 'test-one3@gmail.com',
+        email: 'main_test@gmail.com',
         password: '12345678',
         gender: 1,
         dob: '1987-03-23',

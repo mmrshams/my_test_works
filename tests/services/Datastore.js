@@ -1,7 +1,19 @@
 
+/*
+Datastore.js
+
+this file will have interaction with our test's database  (CREATE - CREATE ID - UPDATE - DELETE-DOCUMENT - DELETE-COLLECTION - LIST)
+CLASS Datastore details:
+CREATE : setDocument() => set document to collection + default ID
+CREATE ID : setDocumentWithID() => set document to collection + manual ID
+UPDATE : updateDocument () => update document data in special collection
+DELETE-DOCUMENT : deleteCollection () => delete special document with ID
+DELETE-COLLECTION : deleteCollection () => delete special collection and depend on [deleteQueryBatch()]
+LIST : listDocumemt() => will Return list of documents
+ */
+
 import Config from '../Config'
 import Firestore from '@google-cloud/firestore'
-
 // set new data to document.
 let items = {
   identifier: 'mmrshams96@gmial.com',
@@ -27,7 +39,7 @@ class Datastore {
     this.batchSize = 10
   }
 
-  async setDocument (item) {
+  async setDocument () {
     try {
       const document = firestore.collection(this.collection).doc()
       await document.set(this.data)
@@ -36,7 +48,7 @@ class Datastore {
       console.log('error', e)
     }
   }
-  async setDocumentWithID (item) {
+  async setDocumentWithID () {
     try {
       const document = firestore.collection(this.collection).doc(this.identifier)
       await document.set(this.data)
@@ -49,7 +61,7 @@ class Datastore {
   // Update an existing document.
   async updateDocument () {
     try {
-      const document = firestore.doc('')
+      const document = firestore.collection(this.collection).doc('')
       await document.update({
       })
       console.log('Updated an existing document')
