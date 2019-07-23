@@ -22,6 +22,9 @@ class Mock {
       staffDoc: {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
+        gender: 1,
+        status: 'new',
+        mobile: '092345855332',
         email: this.email
       },
       staffEmailDocID: this.email,

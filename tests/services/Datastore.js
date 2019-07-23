@@ -16,7 +16,7 @@ const firestore = new Firestore(configs.firestore)
 class Model {
   constructor (collection) {
     this.collection = firestore.collection(collection)
-    this.batchSize = 10
+    this.batchSize = 20
   }
 
   async setDocumentWithID (key, obj) {
@@ -30,15 +30,19 @@ class Model {
   }
 
   async deleteQueryBatch (collection, batchSize) {
-    const snapshot = await collection.get()
-    if (snapshot.size > 0) {
-      let batch = firestore.batch()
-      snapshot.docs.forEach(doc => { batch.delete(doc.ref) })
-      await batch.commit()
+    try {
+      const snapshot = await collection.get()
+      if (snapshot.size > 0) {
+        let batch = firestore.batch()
+        snapshot.docs.forEach(doc => { batch.delete(doc.ref) })
+        await batch.commit()
+      }
+      if (snapshot.size >= batchSize) {
+        return this.deleteQueryBatch(collection, batchSize)
+      }
       console.log('collection deleted !')
-    }
-    if (snapshot.size >= batchSize) {
-      return this.deleteQueryBatch(collection, batchSize)
+    } catch (e) {
+      console.log('error', e)
     }
   }
 

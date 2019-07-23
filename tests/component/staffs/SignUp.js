@@ -2,6 +2,10 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
+
+// # signup test
+// there is the component test for all possible states that may happen in real call
+
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Config from '../../configs'
