@@ -22,7 +22,7 @@ describe('Staff login', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    // this test send valid email and password so we use [ mock.email , mock.password ] that generated with facker
+// this test send valid email and password so we use [ mock.email , mock.password ] that generated with facker
     it('01 When both of them are correct it should return staff', done => {
       var CLIENT = {
         email: mock.email,
@@ -40,7 +40,7 @@ describe('Staff login', () => {
           done()
         })
     })
-    // check state that sending correct email and incorrect password
+// check state that sending correct email and incorrect password
     it('02 when email is correct and password is incorrect ', done => {
       var CLIENT = {
         email: mock.email,
@@ -57,7 +57,7 @@ describe('Staff login', () => {
           done()
         })
     })
-    // check state that sending incorrect email and incorrect password
+// check state that sending incorrect email and incorrect password
     it('03 when email is incorrect ', done => {
       var CLIENT = {
         email: 'mrshams@tainja.com',
@@ -98,7 +98,7 @@ describe('Staff login', () => {
           done()
         })
     })
-    // send incorrect email without password
+// send incorrect email without password
     it('02 when email is incorrect ', done => {
       var CLIENT = {
         email: 'mrshamstainja@gmail.com'
@@ -122,7 +122,7 @@ describe('Staff login', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    // send null request
+ // send null request
     it('01  ', done => {
       var CLIENT = {
       }
