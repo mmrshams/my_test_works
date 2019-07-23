@@ -1,3 +1,6 @@
+// #configs
+// all of our configuration informaiton that we need to setup invironment for test
+
 import Path from 'path'
 import dotenv from 'dotenv'
 

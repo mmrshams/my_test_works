@@ -9,9 +9,6 @@ var assert = chai.assert
 chai.use(chaiHttp)
 const server = Config.config.server.host + ':' + Config.config.server.port
 describe('Staff Entity', () => {
-  /*
-  * Test the /POST SignUp route
-  */
   describe('/POST  SignUp', () => {
     it('01 response should have property firstname lastname email gmail gender dob mobile', done => {
       var CLIENT = {

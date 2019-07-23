@@ -2,18 +2,19 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
+
+// # login test
+// there is the component test for all possible states that may happen in real call
+
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Mock from '../../services/Staff'
 import configs from '../../configs'
-// var assert = chai.assert
+
 chai.use(chaiHttp)
 const expect = chai.expect
 const mock = new Mock()
 describe('Staff Entity', () => {
-  /*
-  * Test the /POST Login route
-  */
   describe('/POST  Login', () => {
     beforeEach(function () {
       return mock.createStaff()
@@ -32,8 +33,7 @@ describe('Staff Entity', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
-          expect(res.body.data.staff).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'lastLogin', 'updatedAt')
-          // assert.hasAllKeys(res.body.data.staff, ['firstName', 'lastName', 'email', 'gender', 'dob', 'createdAt', 'id', 'mobile', 'status', 'updatedAt', 'lastLogin'])
+          expect(res.body.data.staff).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'lastLogin', 'updatedAt', 'gender', 'mobile', 'status')
           done()
         })
     })

@@ -1,3 +1,9 @@
+// # Moch
+// providing a Mock class for create fake data to feed our test database
+// base on stuff entity collecitons (staff - email staff )
+// we need create object in both collection
+// and clean up database after test
+
 import Model from './Datastore'
 import faker from 'faker'
 import crypto from 'crypto'
@@ -16,25 +22,12 @@ class Mock {
       staffDoc: {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        // dob: faker.date.past(),
-        // createdAt: faker.date.recent(),
-        // mobile: faker.phone.phoneNumber(),
-        // status: 'new',
         email: this.email
-        // gender: faker.random.boolean()
       },
       staffEmailDocID: this.email,
       staffEmailDoc: {
         staffId: this.ID,
-        password: this.createPassword(this.password),
-        // createdAt: faker.date.recent(),
-        // updatedAt: faker.date.recent(),
-        verification:
-        {
-          // expiresAt: faker.date.future(),
-          code: faker.internet.password(),
-          verifiedAt: null
-        }
+        password: this.createPassword(this.password)
       }
     }
   }
