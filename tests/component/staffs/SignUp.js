@@ -1,25 +1,18 @@
-/* eslint-disable no-unused-vars */
+
 /* eslint-disable handle-callback-err */
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
-
-//testing base on  end-point cluster  =>   /v1/staffs  
-//testing all state of resposibility that can happens
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import Service from '../Services.js'
-let should = chai.should()
+import Config from '../../configs'
 var assert = chai.assert
 chai.use(chaiHttp)
-
+const server = Config.config.server.host + ':' + Config.config.server.port
 describe('Staff Entity', () => {
-  
-  // Test the /POST SignUp route
-  
+  /*
+  * Test the /POST SignUp route
+  */
   describe('/POST  SignUp', () => {
-    afterEach(function () {
-      return Service.listDocumemt()
-    })
     it('01 response should have property firstname lastname email gmail gender dob mobile', done => {
       var CLIENT = {
         firstName: 'omid',
@@ -31,9 +24,9 @@ describe('Staff Entity', () => {
         mobile: '0923458558'
       }
       chai
-        .request(Service.Server)
+        .request(server)
         .post('/v1/staffs')
-        .set('apikey', Service.validApiKey)
+        .set('apikey', Config.config.apiKey)
         .send(CLIENT)
         .end((err, res) => {
           Service.listDocumemt()
