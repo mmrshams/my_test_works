@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
 
-// # signup test
+// # invite test
 // there is the component test for all possible states that may happen in real call
 
 import chai from 'chai'
@@ -13,9 +13,10 @@ import configs from '../../configs'
 
 chai.use(chaiHttp)
 const expect = chai.expect
+// status filed must be [new]  not [invited ] couse we need to create user that registerd before for test
 const mock = new Mock('new')
 
-describe('Staff Sign Up', () => {
+describe('Staff Invite', () => {
   describe(' POST when request have correct fields [ firstName, lastName, email, gender, dob, createdAt, id, mobile, status, updatedAt]', () => {
     afterEach(function () {
       return mock.cleanup()
@@ -25,20 +26,19 @@ describe('Staff Sign Up', () => {
         firstName: 'omid',
         lastName: 'shams',
         email: 'main_test@gmail.com',
-        password: '12345678',
         gender: 1,
         dob: '1987-03-23',
         mobile: '0923458558'
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
           expect(res).to.have.status(200)
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status')
-          expect(res.body.data).to.have.property('status').eql('new')
+          expect(res.body.data).to.have.property('status').eql('invited')
           expect(res.body.data).have.property('email').eql(CLIENT.email)
           expect(res.body).to.be.a('object')
           done()
@@ -49,36 +49,13 @@ describe('Staff Sign Up', () => {
         firstName: 'omid',
         lastName: 'shams',
         email: 'main_test',
-        password: '12345678',
         gender: 1,
         dob: '1987-03-23',
         mobile: '0923458558'
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.status(400)
-          expect(res.body).to.have.property('error')
-          expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
-          done()
-        })
-    })
-    it('03 sending password with less than 8 characters ', done => {
-      var CLIENT = {
-        firstName: 'omid',
-        lastName: 'shams',
-        email: 'main_test',
-        password: '123',
-        gender: 1,
-        dob: '1987-03-23',
-        mobile: '0923458558'
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
@@ -93,14 +70,13 @@ describe('Staff Sign Up', () => {
         firstName: 'omid',
         lastName: 'shams',
         email: 'main_test',
-        password: '123',
         gender: 2,
         dob: '1987-03-23',
         mobile: '0923458558'
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
@@ -119,7 +95,6 @@ describe('Staff Sign Up', () => {
         firstName: 'omid',
         lastName: 'shams',
         email: 'main_test@gmail.com',
-        password: '12345678',
         gender: 1,
         dob: '1987-03-23',
         mobile: '0923458558',
@@ -127,7 +102,7 @@ describe('Staff Sign Up', () => {
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
@@ -138,7 +113,7 @@ describe('Staff Sign Up', () => {
         })
     })
   })
-  describe(' POST when request with out optional field and with nessessary fields => [firstname , lastname , email , password]', () => {
+  describe(' POST when request with out optional field and with nessessary fields => [firstname , lastname , email]', () => {
     afterEach(function () {
       return mock.cleanup()
     })
@@ -146,12 +121,11 @@ describe('Staff Sign Up', () => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
-        email: 'main_test@gmail.com',
-        password: '12345678'
+        email: 'main_test@gmail.com'
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
@@ -170,7 +144,6 @@ describe('Staff Sign Up', () => {
       var CLIENT = {
         lastName: 'shams',
         email: 'main_test@gmail.com',
-        password: '12345678',
         gender: 1,
         dob: '1987-03-23',
         mobile: '0923458558',
@@ -178,7 +151,7 @@ describe('Staff Sign Up', () => {
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
@@ -201,14 +174,13 @@ describe('Staff Sign Up', () => {
         firstName: 'omid',
         lastName: 'shams',
         email: mock.email,
-        password: '12345678',
         gender: 1,
         dob: '1987-03-23',
         mobile: '0923458558'
       }
       chai
         .request(configs.server.base)
-        .post('/v1/staffs')
+        .post('/v1/staffs/invite')
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {

@@ -11,9 +11,10 @@ const staff = new Model('test_staffs')
 const staffEmail = new Model('test_staff_emails')
 
 class Mock {
-  constructor () {
+  constructor (status) {
+    this.status = status
     this.email = faker.internet.email().toLowerCase()
-    this.ID = faker.random.uuid()
+    this.ID = faker.random.uuid().toString()
     this.password = faker.internet.password()
   }
   generate = () => {
@@ -23,9 +24,11 @@ class Mock {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         gender: 1,
-        status: 'new',
+        status: this.status,
         mobile: '092345855332',
-        email: this.email
+        email: this.email,
+        createdAt: '2019-07-24T09:55:30+00:00',
+        updatedAt: '2019-07-24T09:55:53+00:00'
       },
       staffEmailDocID: this.email,
       staffEmailDoc: {
