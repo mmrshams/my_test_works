@@ -7,15 +7,20 @@
 import Model from './Datastore'
 import faker from 'faker'
 import crypto from 'crypto'
+import Path from 'path'
+import fs from 'fs'
 const staff = new Model('test_staffs')
 const staffEmail = new Model('test_staff_emails')
+
+let imageAddress = { path: Path.join(__dirname, '../statics/download.jpeg') }
 
 class Mock {
   constructor (status) {
     this.status = status
     this.email = faker.internet.email().toLowerCase()
-    this.ID = faker.random.uuid().toString()
+    this.ID = faker.random.uuid()
     this.password = faker.internet.password()
+    this.image = ''
   }
   generate = () => {
     return {
@@ -28,7 +33,8 @@ class Mock {
         mobile: '092345855332',
         email: this.email,
         createdAt: '2019-07-24T09:55:30+00:00',
-        updatedAt: '2019-07-24T09:55:53+00:00'
+        updatedAt: '2019-07-24T09:55:53+00:00',
+        dob: '1987-04-12'
       },
       staffEmailDocID: this.email,
       staffEmailDoc: {
@@ -53,7 +59,10 @@ class Mock {
     await staffEmail.setDocumentWithID(user.staffEmailDocID, user.staffEmailDoc)
     return user
   }
-
+  loadImage = async () => {
+    let image = await fs.readFileSync(imageAddress.path)
+    this.image = image
+  }
   cleanup = async () => {
     await staff.deleteCollection()
     await staffEmail.deleteCollection()

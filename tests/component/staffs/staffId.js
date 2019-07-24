@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable mocha/valid-suite-description */
 
-// # detail test
+// # staffId test
 // there is the component test for all possible states that may happen in real call
 
 import chai from 'chai'
