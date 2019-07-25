@@ -11,7 +11,7 @@
     "doc-generate": "gitbook-comment generate -p ./",
     "doc-clean-up": "gitbook-comment clean-up -p ./",
     "doc-publish": "gitbook-comment publish -p ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc mocha --timeout 15000  ${FILES:-tests/component/staffs/*} --require @babel/register --watch --recursive"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "homepage": "https://github.com/mmrshams/my_test_works#readme",
   "dependencies": {
     "gitbook-comment": "^1.0.6"
+
+  },
+  "devDependencies": {
+    "nyc": "^13.3.0"
   }
 }
