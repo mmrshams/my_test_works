@@ -13,15 +13,14 @@ import configs from '../../configs'
 
 chai.use(chaiHttp)
 const expect = chai.expect
-// status filed must be [new]  not [invited ] couse we need to create user that registerd before for test
-const mock = new Mock('new')
+const mock = new Mock()
 
 describe('Staff Invite', () => {
-  describe(' POST when request have correct fields [ firstName, lastName, email, gender, dob, createdAt, id, mobile, status, updatedAt]', () => {
+  describe(' POST  request have all fields ', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 all fields are valid ', done => {
+    it('01 when send [ firstName, lastName, email, gender, dob, createdAt, id, mobile, status, updatedAt] fields as valid expect return staff object ', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -36,6 +35,7 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(200)
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status')
           expect(res.body.data).to.have.property('status').eql('invited')
@@ -44,7 +44,7 @@ describe('Staff Invite', () => {
           done()
         })
     })
-    it('02 sending email with bad format ', done => {
+    it('02 when send email with bad format expect error 400 ', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -59,13 +59,14 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
           done()
         })
     })
-    it('04 sending gender with number greater than 1 ', done => {
+    it('03 when send gender with number greater than 1  expect error', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -80,17 +81,18 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
           done()
         })
     })
   })
-  describe(' POST when request have unnecessary aditional field', () => {
+  describe(' POST request with unnecessary aditional field', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 send request + [job] field ', done => {
+    it('01 when send  request with [job] field  expect error 400', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -106,6 +108,7 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
           expect(res.body).to.be.a('object')
@@ -113,11 +116,11 @@ describe('Staff Invite', () => {
         })
     })
   })
-  describe(' POST when request with out optional field and with nessessary fields => [firstname , lastname , email]', () => {
+  describe(' POST request without optional field and with nessessary fields', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 remove all optional fields ', done => {
+    it('01 when send request with [firstname , lastname , email] expect return staff object ', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -129,6 +132,7 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(200)
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'status', 'createdAt', 'updatedAt')
           expect(res.body).to.be.a('object')
@@ -136,11 +140,11 @@ describe('Staff Invite', () => {
         })
     })
   })
-  describe(' POST when send request without necessary fields', () => {
+  describe(' POST  request without necessary fields', () => {
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 send request with out [firstname] field ', done => {
+    it('01 when send request with out [firstname] field expect error 400', done => {
       var CLIENT = {
         lastName: 'shams',
         email: 'main_test@gmail.com',
@@ -155,6 +159,7 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
           expect(res.body).to.be.a('object')
@@ -162,14 +167,14 @@ describe('Staff Invite', () => {
         })
     })
   })
-  describe(' POST when user registerd before ', () => {
+  describe(' POST  user registerd before ', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 when email is exist ', done => {
+    it('01 when email is exist expect error 409 ', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -184,6 +189,7 @@ describe('Staff Invite', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(409)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'data', 'isBoom', 'isServer', 'output')

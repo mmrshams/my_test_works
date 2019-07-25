@@ -16,31 +16,33 @@ const expect = chai.expect
 
 const mock = new Mock('new')
 describe('Staff staffId', () => {
-  describe('GET  sending id as query-string', () => {
+  describe('GET  request with  id as query-string', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 sending valid [id] ', done => {
+    it('01 when send valid [id] expect return staff object as data ', done => {
       chai
         .request(configs.server.base)
         .get('/v1/staffs/' + mock.ID)
         .set('apikey', configs.apiKey)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'gender', 'mobile', 'status', 'updatedAt', 'createdAt')
           expect(res).to.have.status(200)
           expect(res.body.data).to.be.a('object')
           done()
         })
     })
-    it('02 sending invalid [id] ', done => {
+    it('02 when send invalid [id] expect error 404 ', done => {
       chai
         .request(configs.server.base)
         .get('/v1/staffs/' + '26cdd4b8-441f-49e5-a14b-d1bcdab3e391')
         .set('apikey', configs.apiKey)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(404)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'data', 'isBoom', 'isServer', 'output')
@@ -48,14 +50,14 @@ describe('Staff staffId', () => {
         })
     })
   })
-  describe(' PATCH when request have optional allowed fileds', () => {
+  describe(' PATCH  request with  allowed fileds', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 send all fields that can change ', done => {
+    it('01 when send all allowed fields expect return object  ', done => {
       var CLIENT = {
         firstName: 'omid',
         lastName: 'shams',
@@ -69,7 +71,7 @@ describe('Staff staffId', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
-          console.log(res, err)
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(200)
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status')
           expect(res.body).to.be.a('object')
@@ -77,14 +79,14 @@ describe('Staff staffId', () => {
         })
     })
   })
-  describe(' PATCH  when request have optional unallowed fileds', () => {
+  describe(' PATCH  request with unallowed fileds', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 changing email filed ', done => {
+    it('01 when send  email filed for change expect error 400 ', done => {
       var CLIENT = {
         email: 'main_test@gmail.com'
       }
@@ -94,6 +96,7 @@ describe('Staff staffId', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')

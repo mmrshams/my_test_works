@@ -16,14 +16,14 @@ const expect = chai.expect
 
 const mock = new Mock('new')
 describe('Staff staffId/Password', () => {
-  describe('sending currenct-password and new-password ', () => {
+  describe('request with currenct-password and new-password ', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 when current password in valid and new password is valid too ', done => {
+    it('01 when current password in valid and new password is valid expect return success massage as true ', done => {
       let CLIENT = {
         currentPassword: mock.password,
         newPassword: '123123123'
@@ -34,6 +34,7 @@ describe('Staff staffId/Password', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res.body.data).to.have.keys('success')
           expect(res.body.data).to.have.property('success').eql(true)
           expect(res).to.have.status(200)
@@ -41,7 +42,7 @@ describe('Staff staffId/Password', () => {
           done()
         })
     })
-    it('02 when current password in valid and new password is unvalid ', done => {
+    it('02 when current password in valid and new password is unvalid expect return error 400 ', done => {
       let CLIENT = {
         currentPassword: mock.password,
         newPassword: '123'
@@ -52,13 +53,14 @@ describe('Staff staffId/Password', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
           done()
         })
     })
-    it('03 when current password in wrong and new password is valid ', done => {
+    it('03 when current password in wrong and new password is valid  expect error 401', done => {
       let CLIENT = {
         currentPassword: '12354335435345',
         newPassword: '123123123'
@@ -69,13 +71,14 @@ describe('Staff staffId/Password', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(401)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'data', 'isBoom', 'isServer', 'output')
           done()
         })
     })
-    it('04 when id is wrong ', done => {
+    it('04 when id is invalid  expect error 404', done => {
       let CLIENT = {
         currentPassword: '12354335435345',
         newPassword: '123123123'
@@ -86,6 +89,7 @@ describe('Staff staffId/Password', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(404)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'data', 'isBoom', 'isServer', 'output')
@@ -93,17 +97,16 @@ describe('Staff staffId/Password', () => {
         })
     })
   })
-  describe('sending one filed ', () => {
+  describe('request with  one filed ', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 when sending current password  / new password', done => {
+    it('01 when send current password with out new password expect error 400', done => {
       let CLIENT = {
-        currentPassword: mock.password,
-        newPassword: '123123123'
+        currentPassword: mock.password
       }
       chai
         .request(configs.server.base)
@@ -111,6 +114,7 @@ describe('Staff staffId/Password', () => {
         .set('apikey', configs.apiKey)
         .send(CLIENT)
         .end((err, res) => {
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(400)
           expect(res.body).to.have.property('error')
           expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')

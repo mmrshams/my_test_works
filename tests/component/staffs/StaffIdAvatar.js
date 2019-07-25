@@ -23,43 +23,43 @@ const expect = chai.expect
 const mock = new Mock('new')
 
 describe('Staff staffId/Avatar', () => {
-  describe(' PATCH when request have image file', () => {
+  describe(' PATCH  request with  image file', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
     afterEach(function () {
       return mock.cleanup()
     })
-    it('01 send image with less than 1mb ', done => {
+    it('01 when send image with less than 1mb expect return staff object as data ', done => {
       chai
         .request(configs.server.base)
         .patch('/v1/staffs/' + mock.ID + '/avatar')
         .attach('avatar', fs.readFileSync(smallImageAddress.path), 'avatar.jpeg')
         .set('apikey', configs.apiKey)
         .end((err, res) => {
-          console.log(res, err)
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
           expect(res).to.have.status(200)
           expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'mavatar', 'savatar')
           expect(res.body).to.be.a('object')
           done()
         })
     })
-    it('01 send image with greater than 1mb ', done => {
+    it('01 when send image with greater than 1mb expect send error ???? ', done => {
       chai
         .request(configs.server.base)
         .patch('/v1/staffs/' + mock.ID + '/avatar')
         .attach('avatar', fs.readFileSync(largeImageAddress.path), 'avatar.jpg')
         .set('apikey', configs.apiKey)
         .end((err, res) => {
-          console.log(res, err)
-          expect(res).to.have.status(200)
-          expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'mavatar', 'savatar')
-          expect(res.body).to.be.a('object')
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
+          // expect(res).to.have.status(200)
+          // expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'mavatar', 'savatar')
+          // expect(res.body).to.be.a('object')
           done()
         })
     })
   })
-  describe(' PATCH when request have another type file', () => {
+  describe(' PATCH  request with another files type exepct ....? ', () => {
     beforeEach(function () {
       return mock.createStaff()
     })
@@ -73,10 +73,10 @@ describe('Staff staffId/Avatar', () => {
         .attach('avatar', fs.readFileSync(doc.path), 'avatar.doc')
         .set('apikey', configs.apiKey)
         .end((err, res) => {
-          console.log(res, err)
-          expect(res).to.have.status(200)
-          expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'mavatar', 'savatar')
-          expect(res.body).to.be.a('object')
+          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
+          // expect(res).to.have.status(200)
+          // expect(res.body.data).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'mavatar', 'savatar')
+          // expect(res.body).to.be.a('object')
           done()
         })
     })
