@@ -13,13 +13,15 @@ const staff = new Model('test_staffs')
 const staffEmail = new Model('test_staff_emails')
 
 class Mock {
-  constructor (status, createdAt) {
+  constructor (status, createdAt, expiresAt, verifiedAt) {
     this.ID = faker.random.uuid()
     this.password = faker.internet.password()
     this.email = faker.internet.email().toLowerCase()
     this.status = status
     this.createdAt = createdAt
     this.code = faker.random.uuid()
+    this.expiresAt = expiresAt
+    this.verifiedAt = verifiedAt
   }
   generate = () => {
     return {
@@ -39,8 +41,9 @@ class Mock {
         staffId: this.ID,
         password: this.createPassword(this.password),
         verification: {
-          code: this.code
-
+          code: this.code,
+          expiresAt: this.expiresAt || Moment().add(1, 'days').format(),
+          verifiedAt: null
         }
       }
     }
