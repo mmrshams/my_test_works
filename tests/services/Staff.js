@@ -7,20 +7,19 @@
 import Model from './Datastore'
 import faker from 'faker'
 import crypto from 'crypto'
-import Path from 'path'
-import fs from 'fs'
+import Moment from 'moment'
+
 const staff = new Model('test_staffs')
 const staffEmail = new Model('test_staff_emails')
 
-let imageAddress = { path: Path.join(__dirname, '../statics/download.jpeg') }
-
 class Mock {
-  constructor (status) {
-    this.status = status
-    this.email = faker.internet.email().toLowerCase()
+  constructor (status, createdAt) {
     this.ID = faker.random.uuid()
     this.password = faker.internet.password()
-    this.image = ''
+    this.email = faker.internet.email().toLowerCase()
+    this.status = status
+    this.createdAt = createdAt
+    this.code = faker.random.uuid()
   }
   generate = () => {
     return {
@@ -29,17 +28,20 @@ class Mock {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
         gender: 1,
-        status: this.status,
+        status: this.status || 'new',
         mobile: '092345855332',
         email: this.email,
-        createdAt: '2019-07-24T09:55:30+00:00',
-        updatedAt: '2019-07-24T09:55:53+00:00',
+        createdAt: this.createdAt || Moment().format(),
         dob: '1987-04-12'
       },
       staffEmailDocID: this.email,
       staffEmailDoc: {
         staffId: this.ID,
-        password: this.createPassword(this.password)
+        password: this.createPassword(this.password),
+        verification: {
+          code: this.code
+
+        }
       }
     }
   }
@@ -59,10 +61,7 @@ class Mock {
     await staffEmail.setDocumentWithID(user.staffEmailDocID, user.staffEmailDoc)
     return user
   }
-  loadImage = async () => {
-    let image = await fs.readFileSync(imageAddress.path)
-    this.image = image
-  }
+
   cleanup = async () => {
     await staff.deleteCollection()
     await staffEmail.deleteCollection()

@@ -3,7 +3,7 @@
 // It's primary goal is to check creation of data for cleanup at the of tests.
 
 // ## Why only creation?
-// As we are doing blackbox testing, we should not know the logic of API and no
+// As we are doing black-box testing, we should not know the logic of API and no
 // need to check the existence of data after API calls.
 // We only need to seed the database with some data before we call APIs for our tests.
 // Basically this is our **seeder library**.

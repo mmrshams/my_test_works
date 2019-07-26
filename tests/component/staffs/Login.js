@@ -10,171 +10,87 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Mock from '../../services/Staff'
 import configs from '../../configs'
+import Moment from 'moment'
+import chaiMoment from 'chai-moment'
 
 chai.use(chaiHttp)
+chai.use(chaiMoment)
+
 const expect = chai.expect
-const mock = new Mock('new')
+// the mock reference-object can give 3 obejct as argument (status, createdAt, expiresAt)
+const mock = new Mock()
+const trialExpiryDue = 7
+
 describe('Staff login', () => {
-  describe(' POST With email and password and extra field - [optional]', () => {
-    beforeEach(function () {
-      return mock.createStaff()
-    })
-    afterEach(function () {
-      return mock.cleanup()
-    })
-    // sending name field for testing  with extra field
-    it('01 when sending extra field [ name ] expect error 400 ', done => {
-      var CLIENT = {
-        email: mock.email,
-        password: mock.password,
-        name: 'omid'
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(400)
-          expect(res.body).to.have.property('error')
-          expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
-          expect(res.body).to.be.a('object')
-          done()
-        })
+  let request
+  before(async () => {
+    await mock.createStaff()
+  })
+
+  beforeEach(async () => {
+    request = chai
+      .request(configs.server.base)
+      .post('/v1/staffs/login')
+      .set('apikey', configs.apiKey)
+  })
+
+  after(async () => {
+    await mock.cleanup()
+  })
+  context('With any email or password', () => {
+    it('When user is not registered it should return error', async () => {
+      const { body } = await request.send({
+        email: 'mmrshams96@gmail.com',
+        password: 'password'
+      })
+      expect(body.error.statusCode).to.equal(404)
     })
   })
-  describe(' POST With email and password', () => {
-    beforeEach(function () {
-      return mock.createStaff()
+
+  context('With correct email but wrong password', () => {
+    it('When user exists should return error', async () => {
+      const { body } = await request.send({
+        email: mock.email,
+        password: 'wrongPassword'
+      })
+      expect(body.error.statusCode).to.equal(401)
     })
-    afterEach(function () {
-      return mock.cleanup()
-    })
-    // this test send valid email and password so we use [ mock.email , mock.password ] that generated with facker
-    it('01 When both of them are correct expect return staff', done => {
-      var CLIENT = {
+  })
+
+  context('With correct email and password', () => {
+    it('When not verified but login within 7 days should return staff', async () => {
+      const { body } = await request.send({
         email: mock.email,
         password: mock.password
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res.body.data.staff).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'lastLogin', 'updatedAt', 'gender', 'mobile', 'status')
-          expect(res).to.have.status(200)
-          expect(res.body.data).have.property('email').eql(CLIENT.email)
-          expect(res.body.data.staff).to.be.a('object')
-          done()
-        })
+      })
+      expect(body.data.staff).to.have.all.keys('id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'gender', 'mobile', 'dob', 'status', 'lastLogin')
+        .and.to.have.property('email', mock.email)
+      expect(body.data.staff).to.have.property('lastLogin').that.is.afterMoment(Moment().subtract(1, 'minute').format())
     })
 
-    it('02 when email is correct and password is incorrect expect error 401 ', done => {
-      var CLIENT = {
+    it('When not verified for 7 days or more it should return error', async () => {
+      mock.createdAt = Moment().subtract(trialExpiryDue, 'days').format()
+      await mock.createStaff()
+      const { body } = await request.send({
         email: mock.email,
-        password: '2312312312'
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(401)
-          expect(res.body).to.have.property('error')
-          expect(res.body.error).to.have.all.keys('status', 'statusCode', 'data', 'isBoom', 'isServer', 'output')
-          done()
-        })
-    })
-    // check state that sending incorrect email and incorrect password
-    it('03 when email is incorrect expect error 404 ', done => {
-      var CLIENT = {
-        email: 'mrshams@tainja.com',
-        password: '2312312312'
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(404)
-          expect(res.body).to.have.property('error')
-          done()
-        })
-    })
-  })
-  describe(' POST With email and without password', () => {
-    beforeEach(function () {
-      return mock.createStaff()
-    })
-    afterEach(function () {
-      return mock.cleanup()
+        password: mock.password
+      })
+      expect(body.error.statusCode).to.equal(403)
     })
 
-    it('01 when email is correct expect error 400  ', done => {
-      var CLIENT = {
-        email: mock.email
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(400)
-          expect(res.body).to.have.property('error')
-          done()
-        })
+    it('When invited but doesn\'t exist it should return error', async () => {
+      mock.status = 'invited'
+
+      const { body } = await request.send({
+        email: mock.email,
+        password: mock.password
+      })
+      expect(body.error.statusCode).to.equal(404)
+      expect(body.error.output.payload.message).to.equal('Staff is invited, but it\'s not registered')
     })
 
-    it('02 when email is incorrect expect error 400 ', done => {
-      var CLIENT = {
-        email: 'mrshamstainja@gmail.com'
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(400)
-          expect(res.body).to.have.property('error')
-          expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
-          done()
-        })
-    })
-  })
-  describe(' POST null request', () => {
-    beforeEach(function () {
-      return mock.createStaff()
-    })
-    afterEach(function () {
-      return mock.cleanup()
-    })
-
-    it('01  when send null request expect error 400 ', done => {
-      var CLIENT = {
-      }
-      chai
-        .request(configs.server.base)
-        .post('/v1/staffs/login')
-        .set('apikey', configs.apiKey)
-        .send(CLIENT)
-        .end((err, res) => {
-          expect(res).to.have.header('content-type', 'application/json; charset=utf-8')
-          expect(res).to.have.status(400)
-          expect(res.body).to.have.property('error')
-          expect(res.body.error).to.have.all.keys('status', 'statusCode', 'message')
-          done()
-        })
+    it('When user exists but invited with another email address it should return merged staff', async () => {
+      // TO DO
     })
   })
 })
